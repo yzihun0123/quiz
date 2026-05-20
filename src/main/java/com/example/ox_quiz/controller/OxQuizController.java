@@ -70,6 +70,14 @@ public class OxQuizController {
         } else
         {
             session.setAttribute("loginDto", loginDto);
+            session.setAttribute("loginId", loginDto.getMemberId());
+            session.setAttribute("role", loginDto.getRole());
+            session.setAttribute("status", loginDto.getStatus());
+            session.setAttribute("memberAnswerTrue",
+                    loginDto.getMemberAnswerTrue());
+            session.setAttribute("memberAnswerFalse",
+                    loginDto.getMemberAnswerFalse());
+            session.setAttribute("joinDate", loginDto.getCreatedAt());
             session.setMaxInactiveInterval(1800);
             return "redirect:/member/my-page";
         }
@@ -105,7 +113,7 @@ public class OxQuizController {
         return "quiz/update";
     }
 
-    @PostMapping("/member/logout")
+    @GetMapping("/member/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "index";
