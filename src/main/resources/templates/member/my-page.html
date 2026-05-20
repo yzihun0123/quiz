@@ -35,11 +35,11 @@
     </div>
 
     <!-- 승인 상태 안내 -->
-    <div class="alert alert-success">
+    <div th:if="${session.status.name() == 'APPROVED'}" class="alert alert-success">
         관리자 승인이 완료되었습니다. 퀴즈 플레이가 가능합니다.
     </div>
 
-    <div class="alert alert-warning">
+    <div th:if="${session.status.name() == 'PENDING'}"  class="alert alert-warning">
         관리자 승인 후 퀴즈 플레이가 가능합니다.
     </div>
 
@@ -54,45 +54,48 @@
         <div class="card-body">
             <table class="table align-middle mb-0">
                 <tbody>
-                <tr th:each="member : ${memberList}">
+                <tr>
                     <th style="width: 200px;">아이디</th>
-                    <td th:text="*{member.memberId}">user01</td>
+                    <td><span th:text="${session.loginId}"></span></td>
                 </tr>
 
                 <tr>
                     <th>권한</th>
-                    <td>
-                        <span class="badge bg-danger">ADMIN</span>
-                        <span class="badge bg-primary">USER</span>
+                    <td th:switch="${session.role.name()}">
+                        <span th:case="'ADMIN'" class="badge bg-danger">ADMIN</span>
+                        <span th:case="'USER'" class="badge bg-primary">USER</span>
                     </td>
                 </tr>
 
                 <tr>
                     <th>승인 상태</th>
-                    <td>
-                        <span class="badge bg-success">승인 완료</span>
-
-                        <span class="badge bg-secondary">승인 대기</span>
+                    <td th:switch="${session.status.name()}">
+                        <span th:case="'APPROVED'" class="badge bg-success">승인 완료</span>
+                        <span th:case="'PENDING'" class="badge bg-secondary">승인 대기</span>
                     </td>
                 </tr>
 
                 <tr>
                     <th>맞은 문제 수</th>
                     <td>
-                        <span class="badge bg-primary">0</span>
+                        <span th:text="${session.memberAnswerTrue}"
+                              class="badge bg-primary"></span>
                     </td>
                 </tr>
 
                 <tr>
                     <th>틀린 문제 수</th>
                     <td>
-                        <span class="badge bg-danger">0</span>
+                        <span th:text="${session.memberAnswerFalse}"
+                              class="badge bg-danger"></span>
                     </td>
                 </tr>
 
                 <tr>
                     <th>가입일</th>
-                    <td>2026-05-16 10:00</td>
+                    <td>
+                        <span th:text="${#temporals.format(session.joinDate, 'yyyy-MM-dd HH:mm')}"></span>
+                    </td>
                 </tr>
                 </tbody>
             </table>
