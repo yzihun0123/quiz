@@ -2,6 +2,7 @@ package com.example.ox_quiz.service;
 
 import com.example.ox_quiz.dto.MemberDto;
 import com.example.ox_quiz.entity.Member;
+import com.example.ox_quiz.entity.MemberStatus;
 import com.example.ox_quiz.entity.RoleType;
 import com.example.ox_quiz.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,31 +25,33 @@ public class MemberService {
                 passwordEncoder.encode(dto.getMemberPassword())
         );
         member.setRole(RoleType.USER);
+        member.setStatus(MemberStatus.PENDING);
         memberRepository.save(member);
     }
 
+    // 전체 맴버 조회
     public List<MemberDto> findAll() {
         return memberRepository.findAll()
                 .stream()
-                .map(x -> MemberDto.toDto(x))
+                .map(x -> MemberDto.toMemberDto(x))
                 .toList();
     }
 
     // ID 조회
-    public MemberDto findById(String id) {
-        Member member = memberRepository.findById(id).orElse(null);
+    public MemberDto findByMemberId(String id) {
+        Member member = memberRepository
+                .findById(id)
+                .orElse(null);
         if (member == null) {
             return null;
         }
-        return MemberDto.toDto(member);
+        return MemberDto.toMemberDto(member);
     }
 
     // 로그인
     public MemberDto login (MemberDto dto) {
-        MemberDto loginDto = findById(dto.getMemberId());
-        if (loginDto == null) {
-            return null;
-        }
+        MemberDto loginDto = findByMemberId(dto.getMemberId());
+        if (loginDto == null) return null;
         boolean matches = passwordEncoder.matches(
                 dto.getMemberPassword(),
                 loginDto.getMemberPassword()

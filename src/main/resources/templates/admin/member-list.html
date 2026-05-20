@@ -36,59 +36,38 @@
         </thead>
 
         <tbody>
-        <tr>
+        <tr th:each="member : ${memberList}">
+            <td th:text="*{member.memberNo}"></td>
+            <td th:text="*{member.memberId}"></td>
 
-            <td>1</td>
-
-            <td>user01</td>
-
-            <td>
-                <span class="badge bg-danger">
-                    ADMIN
-                </span>
-
-                <span class="badge bg-primary">
-                    USER
-                </span>
+            <td th:switch="${member.role.name()}">
+                <span th:case="'ADMIN'" class="badge bg-danger">ADMIN</span>
+                <span th:case="'USER'" class="badge bg-primary">USER</span>
             </td>
 
-            <td>
-                <span class="badge bg-success">
-                    승인
-                </span>
-
-                <span class="badge bg-secondary">
-                    미승인
-                </span>
+            <td th:switch="${member.status.name()}">
+                <span th:case="'APPROVED'" class="badge bg-success">승인</span>
+                <span th:case="'PENDING'" class="badge bg-secondary">미승인</span>
             </td>
 
-            <td>0</td>
+            <td th:text="*{member.memberAnswerTrue}">0</td>
 
-            <td>0</td>
+            <td th:text="*{member.memberAnswerFalse}">0</td>
 
-            <td>
-                <form
-                        action="/admin/member/approve"
-                        method="post">
-                    <button
-                            type="submit"
-                            class="btn btn-success btn-sm">
+            <td th:switch="${member.status.name()}">
+                <form action="/admin/member/approve" method="post"
+                th:case="'PENDING'">
+                    <button type="submit" class="btn btn-success btn-sm">
                         승인
                     </button>
-
                 </form>
 
-                <span class="text-muted">
-                    완료
-                </span>
+                <span th:case="'APPROVED'" class="text-muted">완료</span>
             </td>
 
             <td>
-                <form
-                        action="/admin/member/password"
-                        method="post"
-                        class="d-flex gap-2">
-
+                <form action="/admin/member/password" method="post"
+                      class="d-flex gap-2">
                     <input
                             type="password"
                             name="password"
