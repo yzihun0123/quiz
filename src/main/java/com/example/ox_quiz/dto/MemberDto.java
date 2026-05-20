@@ -21,25 +21,25 @@ public class MemberDto {
     private LocalDateTime createdAt;
     // 수정일
     private LocalDateTime updatedAt;
-    private MemberStatus memberStatus;
+    private MemberStatus status;
     private Integer memberAnswerTrue;
     private Integer memberAnswerFalse;
 
     // Dto -> Entity
-    public static Member toEntity(MemberDto dto) {
+    public static Member toEntity(MemberDto memberDto) {
         Member member = new Member();
-        member.setNo(dto.getMemberNo());
-        member.setId(dto.getMemberId());
-        member.setPassword(dto.getMemberPassword());
-        member.setRole(dto.getRole());
-        member.setStatus(dto.getMemberStatus());
-        member.setAnswerTrue(dto.getMemberAnswerTrue());
-        member.setAnswerFalse(dto.getMemberAnswerFalse());
+        member.setNo(memberDto.getMemberNo());
+        member.setId(memberDto.getMemberId());
+        member.setPassword(memberDto.getMemberPassword());
+        member.setRole(memberDto.getRole());
+        member.setStatus(memberDto.getStatus());
+        member.setAnswerTrue(memberDto.getMemberAnswerTrue());
+        member.setAnswerFalse(memberDto.getMemberAnswerFalse());
         // 생성일과 수정일은 Entity에 전달할 이유가 없음.
         return member;
     }
     // Entity -> Dto
-    public static MemberDto toDto (Member member) {
+    public static MemberDto toMemberDto(Member member) {
         return new MemberDto(
                 member.getNo(),
                 member.getId(),
