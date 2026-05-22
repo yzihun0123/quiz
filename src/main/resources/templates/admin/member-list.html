@@ -57,6 +57,7 @@
             <td th:switch="${member.status.name()}">
                 <form action="/admin/member/approve" method="post"
                 th:case="'PENDING'">
+                    <input type="hidden" name="memberNo" th:value="${member.memberNo}"/>
                     <button type="submit" class="btn btn-success btn-sm">
                         승인
                     </button>
@@ -68,9 +69,10 @@
             <td>
                 <form action="/admin/member/password" method="post"
                       class="d-flex gap-2">
+                    <input type="hidden" name="memberNo" th:value="${member.memberNo}"/>
                     <input
                             type="password"
-                            name="password"
+                            name="newPassword"
                             class="form-control form-control-sm"
                             placeholder="새 비밀번호">
 

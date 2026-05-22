@@ -23,12 +23,19 @@ public class QuizService {
                 .toList();
     }
 
-    public void quizRandom(QuizDto quizDto) {
-        Quiz quiz = (Quiz) quizRepository
-                .findAll()
-                .stream()
-                .map(x->QuizDto.toQuizDto(x))
-                .toList();
-        Random random = new Random();
+    // QuizService에 추가
+    public QuizDto findQuizById(Long id) {
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("퀴즈 없음"));
+        return QuizDto.toQuizDto(quiz);
+    }
+
+    public void updateQuiz(QuizDto quizDto) {
+        Quiz quiz = QuizDto.toEntity(quizDto);
+        quizRepository.save(quiz);
+    }
+
+    public void deleteQuiz(Long id) {
+        quizRepository.deleteById(id);
     }
 }

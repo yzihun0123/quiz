@@ -45,8 +45,8 @@ public class MemberDto {
                 member.getId(),
                 member.getPassword(),
                 member.getRole(),
-                member.getUpdatedAt(),
                 member.getCreatedAt(),
+                member.getUpdatedAt(),
                 member.getStatus(),
                 member.getAnswerTrue(),
                 member.getAnswerFalse()
