@@ -23,10 +23,18 @@ public class QuizService {
                 .toList();
     }
 
+    public void InsertQuiz(QuizDto dto) {
+        Quiz quiz = new Quiz();
+        quiz.setContent(dto.getQuizContent());
+        quiz.setAnswer(dto.getQuizAnswer());
+        quiz.setWriter(dto.getQuizWriter());
+        quizRepository.save(quiz);
+    }
+
     // QuizService에 추가
     public QuizDto findQuizById(Long id) {
         Quiz quiz = quizRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("퀴즈 없음"));
+                .orElseThrow(() -> new RuntimeException("퀴즈 없음"));
         return QuizDto.toQuizDto(quiz);
     }
 
@@ -35,7 +43,9 @@ public class QuizService {
         quizRepository.save(quiz);
     }
 
-    public void deleteQuiz(Long id) {
-        quizRepository.deleteById(id);
+    public void deleteQuiz(QuizDto quizDto) {
+        Quiz quiz = new Quiz();
+        quiz.setId(quizDto.getQuizId());
+        quizRepository.delete(quiz);
     }
 }
