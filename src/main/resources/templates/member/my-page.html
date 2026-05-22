@@ -22,13 +22,16 @@
         <div class="d-flex gap-2">
 
             <!-- 승인 완료 회원만 퀴즈 플레이 가능 -->
-            <a href="/quiz/play" class="btn btn-success">퀴즈 플레이</a>
+            <a href="/quiz/play" th:if="${session.status.name() == 'APPROVED'}"
+               class="btn btn-success">퀴즈 플레이</a>
 
             <!-- 승인 전 회원 -->
-            <button class="btn btn-secondary" disabled>승인 필요</button>
+            <button th:if="${session.status.name() == 'PENDING'}"
+                    class="btn btn-secondary" disabled>승인 필요</button>
 
             <!-- 관리자만 퀴즈 관리 이동 -->
-            <a href="/quiz" class="btn btn-dark">퀴즈 관리</a>
+            <a href="/quiz" th:if="${session.role.name() == 'ADMIN'}"
+                class="btn btn-dark">퀴즈 관리</a>
 
             <a href="/member/logout" class="btn btn-outline-danger">로그아웃</a>
         </div>
@@ -44,9 +47,7 @@
     </div>
 
     <!-- 메시지 -->
-    <div class="alert alert-info">
-        비밀번호가 수정되었습니다.
-    </div>
+    <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
 
     <!-- 사용자 정보 -->
     <div class="card shadow-sm mb-4">
@@ -116,7 +117,7 @@
                     <input
                             type="password"
                             id="password"
-                            name="password"
+                            name="memberPassword"
                             class="form-control"
                             required>
                 </div>

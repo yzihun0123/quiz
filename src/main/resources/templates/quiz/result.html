@@ -38,7 +38,7 @@
 
             <!-- ADMIN일 때 -->
             <a href="/quiz"
-               class="btn btn-secondary">
+               th:if="${session.role.name() == 'ADMIN'}" class="btn btn-secondary">
                 퀴즈 관리
             </a>
 

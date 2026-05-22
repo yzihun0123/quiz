@@ -20,9 +20,7 @@
 
         <div class="card-body">
 
-            <div class="alert alert-danger">
-                아이디 또는 비밀번호가 틀렸습니다.
-            </div>
+            <div th:if="${loginFail}" class="alert alert-danger" th:text="${loginFail}"></div>
 
             <form action="/member/login" method="post">
 

@@ -8,13 +8,12 @@ import com.example.ox_quiz.service.QuizService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.security.web.util.RedirectUrlBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class OxQuizController {
 
     @GetMapping("/member/join")
     public String join() {
-        return "member/join";
+        return "index";
     }
 
     @PostMapping("/member/join")
@@ -44,17 +43,7 @@ public class OxQuizController {
         memberService.signup(dto);
         redirectAttributes.addFlashAttribute("message",
                 "회원가입 완료");
-        return "index";
-    }
-
-    @GetMapping("/quiz")
-    public String quizList(Model model) {
-        List<QuizDto> quizDtoList = quizService.findAllQuiz();
-        if (ObjectUtils.isEmpty(quizDtoList)) {
-        } else {
-            model.addAttribute("quizList", quizDtoList);
-        }
-        return "quiz/list";
+        return "redirect:/";
     }
 
     @GetMapping("/member/login")
@@ -63,12 +52,14 @@ public class OxQuizController {
     }
 
     @PostMapping("/member/login")
-    public String loginMember(MemberDto dto, HttpSession session){
+    public String loginMember(MemberDto dto, HttpSession session,
+                              RedirectAttributes redirectAttributes) {
         MemberDto loginDto = memberService.login(dto);
         if (loginDto == null) {
+            redirectAttributes.addFlashAttribute("loginFail",
+                    "아이디 또는 비밀번호가 틀렸습니다.");
             return "redirect:/member/login";
-        } else
-        {
+        } else {
             session.setAttribute("loginDto", loginDto);
             session.setAttribute("loginId", loginDto.getMemberId());
             session.setAttribute("role", loginDto.getRole());
@@ -83,7 +74,32 @@ public class OxQuizController {
         }
     }
 
-    @GetMapping("/member/memberList")
+    @GetMapping("/member/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "index";
+    }
+
+    @GetMapping("/member/my-page")
+    public String myPage() {
+        return "member/my-page";
+    }
+
+    @PostMapping("/member/password")
+    public String updatePassword(@ModelAttribute("dto") MemberDto dto,
+                                 HttpSession session,
+                                 RedirectAttributes redirectAttributes) {
+        String myNo = (String) session.getAttribute("loginId");
+        MemberDto searchMember = memberService.findByMemberId(myNo);
+            searchMember.setMemberPassword(dto.getMemberPassword());
+            memberService.updatePassword(searchMember);
+            redirectAttributes.addFlashAttribute("message"
+                    , "비밀번호가 수정되었습니다");
+
+        return "redirect:/member/my-page";
+    }
+
+    @GetMapping("/admin/members")
     public String memberList(Model model) {
         List<MemberDto> memberDtoList = memberService.findAll();
         if (ObjectUtils.isEmpty(memberDtoList)) {
@@ -93,9 +109,24 @@ public class OxQuizController {
         return "admin/member-list";
     }
 
-    @GetMapping("/member/my-page")
-    public String myPage() {
-        return "member/my-page";
+    @PostMapping("/admin/member/approve")
+    public String memberApprove(@RequestParam("memberNo") Long memberNo){
+        memberService.updateStatus(memberNo);
+        return "redirect:/admin/members";
+    }
+
+    @PostMapping("/admin/member/password")
+    public String memberPasswordEdit(@RequestParam("memberNo") Long memberNo,
+                                     @RequestParam("newPassword") String newPassword) {
+        memberService.adminUpdatePassword(memberNo, newPassword);
+        return "redirect:/admin/members";
+    }
+
+    @GetMapping("/quiz")
+    public String quizList(Model model) {
+        List<QuizDto> quizDtoList = quizService.findAllQuiz();
+        model.addAttribute("quizList", quizDtoList);
+        return "quiz/list";
     }
 
     @GetMapping("/quiz/play")
@@ -113,14 +144,4 @@ public class OxQuizController {
         return "quiz/update";
     }
 
-    @GetMapping("/member/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "index";
-    }
-
-    @PostMapping("/admin/member/password")
-    public String memberPasswordEdit() {
-        return "admin/member-list";
-    }
 }

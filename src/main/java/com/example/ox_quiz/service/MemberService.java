@@ -29,6 +29,32 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    // 비밀번호 업데이트
+    public void updatePassword(MemberDto dto) {
+        Member member = memberRepository.findById(dto.getMemberId())
+                .orElseThrow(()-> new RuntimeException("회원 없음"));
+        member.setPassword(
+                passwordEncoder.encode(dto.getMemberPassword())
+        );
+        memberRepository.save(member);
+    }
+
+    // 상태 업데이트
+    public void updateStatus(Long memberNo) {
+        Member member = memberRepository.findById(memberNo)
+                .orElseThrow(()-> new RuntimeException("회원 없음"));
+        member.setStatus(MemberStatus.APPROVED);
+        memberRepository.save(member);
+    }
+
+    // admin에서 비밀번호 업데이트
+    public void adminUpdatePassword(Long memberNo, String newPassword) {
+        Member member = memberRepository.findById(memberNo)
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
+        member.setPassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
+    }
+
     // 전체 맴버 조회
     public List<MemberDto> findAll() {
         return memberRepository.findAll()
