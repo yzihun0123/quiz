@@ -19,34 +19,27 @@
         </div>
 
         <div class="card-body">
-
             <form
                     action="/quiz/update"
-                    method="post">
+                    method="post"
+                    th:object="${quiz}">
 
-                <input type="hidden" th:field="*{id}">
+                <input type="hidden" name="quizId" th:field="*{quizId}">
 
                 <div class="mb-3">
-                    <label class="form-label">
-                        퀴즈 내용
-                    </label>
-
-                    <textarea rows="5" class="form-control">
-                    </textarea>
+                    <label class="form-label" th:text="*{quizContent}"></label>
+                    <textarea name="quizContent" rows="5" class="form-control"></textarea>
                 </div>
 
                 <div class="mb-3">
-
                     <label class="form-label">
                         퀴즈 정답
                     </label>
-
                     <div class="form-check form-check-inline">
-
                         <input
                                 class="form-check-input"
-                                type="radio" value="true">
-
+                                type="radio" name="quizAnswer" value="true"
+                                th:checked="*{quizAnswer == true}">
                         <label class="form-check-label">
                             O
                         </label>
@@ -57,7 +50,8 @@
 
                         <input
                                 class="form-check-input"
-                                type="radio" value="false">
+                                type="radio" name="quizAnswer" value="false"
+                                th:checked="*{quizAnswer == false}">
 
                         <label class="form-check-label">
                             X
@@ -74,8 +68,7 @@
                     </label>
 
                     <input
-                            type="text" class="form-control">
-
+                            type="text" name="quizWriter" class="form-control" th:value="*{quizWriter}">
                 </div>
 
                 <button

@@ -129,19 +129,36 @@ public class OxQuizController {
         return "quiz/list";
     }
 
-    @GetMapping("/quiz/play")
-    public String play() {
-        return "quiz/play";
+    @PostMapping("/quiz/insert")
+    public String quizInsert(@ModelAttribute QuizDto quizDto) {
+        quizService.InsertQuiz(quizDto);
+        return "redirect:/quiz";
     }
 
-    @GetMapping("/quiz/result")
-    public String result() {
-        return "quiz/result";
-    }
-
-    @GetMapping("/quiz/update")
-    public String update() {
+    @GetMapping("quiz/{id}")
+    public String update(@PathVariable Long id, Model model) {
+        QuizDto quizDto = quizService.findQuizById(id);
+        model.addAttribute("quiz", quizDto);
         return "quiz/update";
+    }
+
+    @PostMapping("/quiz/update")
+    public String quizUpdate(@ModelAttribute QuizDto quizDto) {
+        quizService.updateQuiz(quizDto);
+        return "redirect:/quiz";
+    }
+
+    @PostMapping("/quiz/delete")
+    public String result(@ModelAttribute QuizDto quizDto) {
+        quizService.deleteQuiz(quizDto);
+        return "redirect:/quiz";
+    }
+
+    @GetMapping("/quiz/play")
+    public String play(Model model) {
+        List<QuizDto> quizDtoList = quizService.findAllQuiz();
+        model.addAttribute("quizList", quizDtoList);
+        return "quiz/play";
     }
 
 }
